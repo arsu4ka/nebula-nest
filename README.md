@@ -16,12 +16,6 @@ This application serves as a backend for nebula website where users can complete
 - Postgresql
 - Docker
 
-## Installation
-
-```bash
-$ bun install
-```
-
 ## Running the app locally
 
 Firstly, clone the repository via
