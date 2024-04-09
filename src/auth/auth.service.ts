@@ -30,9 +30,7 @@ export class AuthService {
       throw new BadRequestException('Unable to get a token from twitter api');
     }
 
-    const twitterUser = await this.twitterOauthService.getMe(
-      token.access_token,
-    );
+    const twitterUser = await this.twitterOauthService.getMe(token.access_token);
 
     let user = await this.usersService.findByIdSafe(twitterUser.id);
     if (!user) {

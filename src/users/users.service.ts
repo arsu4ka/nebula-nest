@@ -4,10 +4,7 @@ import { UserEntity } from './entities/user.entity';
 import { UserMapper } from './mappers/user.mapper';
 import { User } from '@prisma/client';
 
-export type CreateUserOptions = Pick<
-  User,
-  'id' | 'name' | 'refreshToken' | 'username'
->;
+export type CreateUserOptions = Pick<User, 'id' | 'name' | 'refreshToken' | 'username'>;
 
 @Injectable()
 export class UsersService {

@@ -14,7 +14,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     super({ log: logOptions });
   }
 
-  async onModuleInit() {
+  async onModuleInit(): Promise<void> {
     this.logger.log(`Initializing Prisma with db: ${env.DATABASE_URL}`);
     await this.$connect();
   }

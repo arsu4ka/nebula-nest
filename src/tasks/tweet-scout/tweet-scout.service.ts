@@ -12,9 +12,7 @@ export class TweetScoutService {
   private readonly apiKey = env.TWEETSCOUT_API_KEY;
   readonly apiUrl = 'https://api.tweetscout.io/api';
 
-  private async sendTweetScoutRequest<T>(
-    options: TweetScoutRequestOptions,
-  ): Promise<T> {
+  private async sendTweetScoutRequest<T>(options: TweetScoutRequestOptions): Promise<T> {
     const response = await fetch(`${this.apiUrl}/${options.path}`, {
       body: JSON.stringify(options.body),
       method: options.method ?? 'POST',
@@ -29,6 +27,7 @@ export class TweetScoutService {
 
   async isUserLiked(username: string, tweetUrl: string): Promise<boolean> {
     let next_cursor = '';
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       const data = await this.sendTweetScoutRequest<TwitterLikedResponse>({
         path: 'check-like',
@@ -62,10 +61,7 @@ export class TweetScoutService {
     return data.text.includes(quoteText);
   }
 
-  async isUserFollowed(
-    username: string,
-    targetUsername: string,
-  ): Promise<boolean> {
+  async isUserFollowed(username: string, targetUsername: string): Promise<boolean> {
     const data = await this.sendTweetScoutRequest<TwitterFollowResponse>({
       path: 'check-follow',
       body: {

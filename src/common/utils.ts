@@ -10,12 +10,10 @@ export function generateRandomHex(length: number): string {
   return result;
 }
 
-export function buildQueryString(query: Record<string, any>): string {
+export function buildQueryString(query: Record<string, string>): string {
   return Object.entries(query)
     .map(([key, value]) =>
-      key && value
-        ? `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
-        : '',
+      key && value ? `${encodeURIComponent(key)}=${encodeURIComponent(value)}` : '',
     )
     .join('&');
 }

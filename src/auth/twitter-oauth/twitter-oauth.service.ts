@@ -20,9 +20,9 @@ export class TwitterOauthService {
   ];
 
   private getBasicAuthHeader(): string {
-    return `Basic ${Buffer.from(
-      `${this.twitterClientId}:${this.twitterClientSecret}`,
-    ).toString('base64')}`;
+    return `Basic ${Buffer.from(`${this.twitterClientId}:${this.twitterClientSecret}`).toString(
+      'base64',
+    )}`;
   }
 
   getAuthLink(redirectUrl: string): string {
@@ -40,10 +40,7 @@ export class TwitterOauthService {
     return url.toString();
   }
 
-  async getAccessToken(
-    code: string,
-    redirect_uri: string,
-  ): Promise<TwitterToken | null> {
+  async getAccessToken(code: string, redirect_uri: string): Promise<TwitterToken | null> {
     const response = await axios.post<TwitterToken>(
       'https://api.twitter.com/2/oauth2/token',
       new URLSearchParams({
@@ -65,14 +62,11 @@ export class TwitterOauthService {
   }
 
   async getMe(accessToken: string): Promise<TwitterUser> {
-    const response = await axios.get<{ data: TwitterUser }>(
-      'https://api.twitter.com/2/users/me',
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+    const response = await axios.get<{ data: TwitterUser }>('https://api.twitter.com/2/users/me', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
       },
-    );
+    });
     return response.data.data;
   }
 }

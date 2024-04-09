@@ -24,9 +24,7 @@ export class TasksService {
     }
 
     const resultPerPost = await Promise.all(
-      this.targetTweets.map((url) =>
-        this.tweetScoutService.isUserLiked(user.username, url),
-      ),
+      this.targetTweets.map((url) => this.tweetScoutService.isUserLiked(user.username, url)),
     );
     if (resultPerPost.includes(false)) {
       checkResult.isTaskCompleted = false;
@@ -63,25 +61,18 @@ export class TasksService {
     return checkResult;
   }
 
-  async checkUserQuoted(
-    user: UserEntity,
-    ref?: string,
-  ): Promise<CheckResultEntity> {
+  async checkUserQuoted(user: UserEntity, ref?: string): Promise<CheckResultEntity> {
     const checkResult = new CheckResultEntity(false);
 
     if (user.userQuoted) {
       checkResult.isTaskCompleted = true;
       return checkResult;
     } else if (!user.userLiked || !user.userFollowed) {
-      throw new BadRequestException(
-        'you should complete like and follow tasks first',
-      );
+      throw new BadRequestException('you should complete like and follow tasks first');
     }
 
     const resultPerTweet = await Promise.all(
-      this.targetTweets.map((url) =>
-        this.tweetScoutService.isUserQuoted(user.username, url),
-      ),
+      this.targetTweets.map((url) => this.tweetScoutService.isUserQuoted(user.username, url)),
     );
     if (resultPerTweet.includes(false)) {
       checkResult.isTaskCompleted = false;
