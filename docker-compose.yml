@@ -1,0 +1,10 @@
+version: '3'
+services:
+  nebula-container:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '${PORT}:${PORT}'
+    env_file:
+      - .env
