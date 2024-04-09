@@ -6,6 +6,7 @@ import { AuthEntity } from './entities/auth.entity';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../common/types';
 import { TwitterOauthService } from './twitter-oauth/twitter-oauth.service';
+import { AuthLinkQueryDto } from './dto/auth-link-query.dto';
 
 @Injectable()
 export class AuthService {
@@ -15,13 +16,16 @@ export class AuthService {
     private readonly twitterOauthService: TwitterOauthService,
   ) {}
 
-  getAuthLink(): AuthLinkEntity {
-    const link = this.twitterOauthService.getAuthLink();
+  getAuthLink(query: AuthLinkQueryDto): AuthLinkEntity {
+    const link = this.twitterOauthService.getAuthLink(query.redirect_url);
     return new AuthLinkEntity(link);
   }
 
   async login(loginDto: LoginDto): Promise<AuthEntity> {
-    const token = await this.twitterOauthService.getAccessToken(loginDto.code);
+    const token = await this.twitterOauthService.getAccessToken(
+      loginDto.code,
+      loginDto.redirect_url,
+    );
     if (!token) {
       throw new BadRequestException('Unable to get a token from twitter api');
     }

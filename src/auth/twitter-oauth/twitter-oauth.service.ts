@@ -7,7 +7,6 @@ import { TwitterUser } from '../schemas/twitter.schema';
 
 @Injectable()
 export class TwitterOauthService {
-  private callbackUrl = env.CALLBACK_URL;
   private twitterClientId = env.TWITTER_CLIENT_ID;
   private twitterClientSecret = env.TWITTER_CLIENT_SECRET;
 
@@ -26,7 +25,7 @@ export class TwitterOauthService {
     ).toString('base64')}`;
   }
 
-  getAuthLink(): string {
+  getAuthLink(redirectUrl: string): string {
     const url = new URL('https://twitter.com/i/oauth2/authorize');
     const params: Record<string, string> = {
       code_challenge_method: 'plain',
@@ -35,20 +34,23 @@ export class TwitterOauthService {
       client_id: this.twitterClientId,
       scope: this.defaultScopes.join(' '),
       response_type: 'code',
-      redirect_uri: this.callbackUrl,
+      redirect_uri: redirectUrl,
     };
     url.search = buildQueryString(params);
     return url.toString();
   }
 
-  async getAccessToken(code: string): Promise<TwitterToken | null> {
+  async getAccessToken(
+    code: string,
+    redirect_uri: string,
+  ): Promise<TwitterToken | null> {
     const response = await axios.post<TwitterToken>(
       'https://api.twitter.com/2/oauth2/token',
       new URLSearchParams({
         code: code,
         grant_type: 'authorization_code',
         client_id: this.twitterClientId,
-        redirect_uri: this.callbackUrl,
+        redirect_uri: redirect_uri,
         code_verifier: this.defaultCodeChallenge,
       }),
       {
@@ -56,6 +58,7 @@ export class TwitterOauthService {
           'Content-Type': 'application/x-www-form-urlencoded',
           Authorization: this.getBasicAuthHeader(),
         },
+        validateStatus: () => true,
       },
     );
     return response.status === 200 ? response.data : null;

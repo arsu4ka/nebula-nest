@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsIn, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { allowedRedirectUrls } from './auth-link-query.dto';
 
 export class LoginDto {
   @IsNotEmpty()
@@ -11,6 +12,12 @@ export class LoginDto {
   @IsString()
   @ApiProperty()
   code: string;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(allowedRedirectUrls)
+  @ApiProperty({ required: false, enum: allowedRedirectUrls })
+  redirect_url = allowedRedirectUrls[0];
 
   constructor(state: string, code: string) {
     this.state = state;

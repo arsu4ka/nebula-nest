@@ -11,7 +11,6 @@ export enum NodeEnv {
 const envSchema = z.object({
   NODE_ENV: z.nativeEnum(NodeEnv),
   PORT: z.coerce.number().int().gt(0),
-  CALLBACK_URL: z.string().url(),
   TWITTER_CLIENT_ID: z.string(),
   TWITTER_CLIENT_SECRET: z.string(),
   TWEETSCOUT_API_KEY: z.string(),
