@@ -1,15 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { env } from '../../env';
+import { Inject, Injectable } from '@nestjs/common';
 import { buildQueryString, generateRandomHex } from '../../common/utils';
 import { TwitterToken } from '../../common/types';
 import axios from 'axios';
 import { TwitterUser } from '../schemas/twitter.schema';
+import { TwitterOauthConfig, twitterOauthConfig } from './twitter-oauth.config';
 
 @Injectable()
 export class TwitterOauthService {
-  private twitterClientId = env.TWITTER_CLIENT_ID;
-  private twitterClientSecret = env.TWITTER_CLIENT_SECRET;
-
   private readonly defaultCodeChallenge = 'nebula';
   readonly defaultScopes = [
     'users.read',
@@ -19,8 +16,10 @@ export class TwitterOauthService {
     'offline.access',
   ];
 
+  constructor(@Inject(twitterOauthConfig.KEY) private readonly config: TwitterOauthConfig) {}
+
   private getBasicAuthHeader(): string {
-    return `Basic ${Buffer.from(`${this.twitterClientId}:${this.twitterClientSecret}`).toString(
+    return `Basic ${Buffer.from(`${this.config.clientId}:${this.config.clientSecret}`).toString(
       'base64',
     )}`;
   }
@@ -31,7 +30,7 @@ export class TwitterOauthService {
       code_challenge_method: 'plain',
       code_challenge: this.defaultCodeChallenge,
       state: generateRandomHex(16),
-      client_id: this.twitterClientId,
+      client_id: this.config.clientId,
       scope: this.defaultScopes.join(' '),
       response_type: 'code',
       redirect_uri: redirectUrl,
@@ -46,7 +45,7 @@ export class TwitterOauthService {
       new URLSearchParams({
         code: code,
         grant_type: 'authorization_code',
-        client_id: this.twitterClientId,
+        client_id: this.config.clientId,
         redirect_uri: redirect_uri,
         code_verifier: this.defaultCodeChallenge,
       }),

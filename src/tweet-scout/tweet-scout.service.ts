@@ -1,23 +1,24 @@
-import { Injectable } from '@nestjs/common';
-import { env } from '../../env';
+import { Inject, Injectable } from '@nestjs/common';
 import {
   TweetScoutRequestOptions,
-  TwitterFollowResponse,
   TwitterLikedResponse,
   TwitterQuoteResponse,
-} from './types';
+  TwitterFollowResponse,
+} from './tweet-scout.types';
+import tweetScoutConfig, { TweetScoutConfig } from './tweet-scout.config';
 
 @Injectable()
 export class TweetScoutService {
-  private readonly apiKey = env.TWEETSCOUT_API_KEY;
   readonly apiUrl = 'https://api.tweetscout.io/api';
+
+  constructor(@Inject(tweetScoutConfig.KEY) private readonly config: TweetScoutConfig) {}
 
   private async sendTweetScoutRequest<T>(options: TweetScoutRequestOptions): Promise<T> {
     const response = await fetch(`${this.apiUrl}/${options.path}`, {
       body: JSON.stringify(options.body),
       method: options.method ?? 'POST',
       headers: {
-        ApiKey: this.apiKey,
+        ApiKey: this.config.apiKey,
         'Content-Type': 'application/json',
       },
     });

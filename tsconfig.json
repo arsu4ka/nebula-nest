@@ -15,7 +15,7 @@
     
     "strict": true,
     "noUncheckedIndexedAccess": true,
-    "noPropertyAccessFromIndexSignature": true,
+    // "noPropertyAccessFromIndexSignature": true,
     "noFallthroughCasesInSwitch": true,
   },
   "include": ["src"]

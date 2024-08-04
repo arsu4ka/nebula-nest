@@ -1,6 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Prisma, PrismaClient } from '@prisma/client';
-import { NodeEnv, env } from '../env';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
@@ -8,14 +7,14 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
   constructor() {
     const logOptions: Prisma.LogLevel[] = ['info', 'warn', 'error'];
-    if (env.NODE_ENV === NodeEnv.local) {
+    if (process.env.NODE_ENV === 'local') {
       logOptions.push('query');
     }
     super({ log: logOptions });
   }
 
   async onModuleInit(): Promise<void> {
-    this.logger.log(`Initializing Prisma with db: ${env.DATABASE_URL}`);
     await this.$connect();
+    this.logger.log('Prisma client connected');
   }
 }
